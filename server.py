@@ -1,6 +1,7 @@
 import os
 import http.server
 import socketserver
+import urllib
 
 from http import HTTPStatus
 
@@ -9,16 +10,12 @@ class Handler(http.server.SimpleHTTPRequestHandler):
     def do_GET(self):
         self.send_response(HTTPStatus.OK)
         self.end_headers()
-        msg = 'Hello At-Eases!!! you requested %s' % (self.path)
+        msg = 'Hello At-Eases! you requested %s' % (self.path)
         self.wfile.write(msg.encode())
 
     def do_POST(self):
-        length = int(self.headers['Content-Length'])
-        print("HEADERS: ", self.headers)
-        print (str(length))
-        print(self.rfile)
         post_data = urllib.parse.parse_qs(self.rfile.read(length).decode('utf-8'))
-        print(post_data)
+        self.wfile.write(post_data)
 
 
 port = int(os.getenv('PORT', 80))
