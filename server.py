@@ -14,12 +14,10 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         self.wfile.write(msg.encode())
 
     def do_POST(self):
-        length = int(self.headers['Content-Length'])
-        post_data = urllib.parse.parse_qs(self.rfile.read(length).decode('utf-8'))
         self.send_response(HTTPStatus.OK)
         self.end_headers()
-        self.wfile.write(post_data.encode(encoding='utf_8'))
-
+        self.wfile.write(json.dumps({'hello': 'world', 'received': 'ok'}))
+        
 
 port = int(os.getenv('PORT', 80))
 print('Listening on port %s' % (port))
