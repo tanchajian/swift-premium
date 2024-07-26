@@ -4,6 +4,8 @@ import socketserver
 import urllib
 import json
 
+from io import BytesIO
+
 from http import HTTPStatus
 
 
@@ -15,9 +17,13 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         self.wfile.write(msg.encode())
 
     def do_POST(self):
-        self.send_response(HTTPStatus.OK)
+        content_length = int(self.headers['Content-Length'])
+        body = self.rfile.read(content_length)
+        self.send_response(200)
         self.end_headers()
-        self.wfile.write(json.dumps({'hello': 'world', 'received': 'ok'}))
+        response = BytesIO()
+        response.write(body)
+        self.wfile.write(response.getvalue())
         
 
 port = int(os.getenv('PORT', 80))
