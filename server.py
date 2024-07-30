@@ -105,14 +105,13 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         for page_num in range(total_pages):
             page_text = extract_text(pdf_path, page_numbers=[page_num])
             if page_text.lstrip().startswith(continuation_keyword):
+                current_bill_pages.append(page_num + 1)
+            else:
                 if current_bill_pages:
                     all_bills.append(current_bill_pages)
                     current_bill_pages = []
                 current_bill_pages.append(page_num + 1)
-            else:
-                if current_bill_pages:
-                    current_bill_pages.append(page_num + 1)
-        
+
         if current_bill_pages:
             all_bills.append(current_bill_pages)
 
